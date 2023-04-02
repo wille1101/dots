@@ -5,7 +5,9 @@ Xcursor.size: 24
 !st.alpha: 1 
 !st.font: FiraCode:pixelsize=16
 
-*.font:	SFMono:pixelsize=14:antialias=true:autohint=true;
+*.font:	Recursive Mono Linear Static:pixelsize=14:antialias=true:autohint=true;
+!*.font:	SFMono:pixelsize=14:antialias=true:autohint=true;
+
 
 ! gruvbox: 
 *.background: #1d2021
