@@ -19,7 +19,7 @@ fi
 
 bspc config border_width         2
 bspc config window_gap          12
-bspc config top_padding		 -10
+bspc config top_padding		27 
 
 bspc config split_ratio          0.5
 bspc config focus_follows_pointer true
@@ -37,3 +37,20 @@ bspc rule -a \* rectangle 1600x1200+0+0 center=true
 bspc rule -a discord desktop='^2'
 bspc rule -a spotify desktop='^2'
 
+# Fix for shadows in monocle mode
+bspc subscribe desktop_layout | while read -r Event
+do
+  Desktop=$(echo "$Event" | awk '{print $3}')
+  State=$(echo "$Event" | awk '{print $4}')
+  if [ "$State" = "monocle" ]; then 
+    bspc query -N -d $Desktop | while read -r Node
+    do
+      xprop -id $Node -f _BSPWM_MONOCLE 32c -set _BSPWM_MONOCLE 1
+    done
+  elif [ $(bspc config window_gap) -gt 0 ]; then
+    bspc query -N -d $Desktop | while read -r Node
+    do
+      xprop -id $Node -remove _BSPWM_MONOCLE
+    done
+  fi
+done &
