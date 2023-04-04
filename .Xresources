@@ -2,7 +2,7 @@ Xcursor.theme: Simple-and-Soft
 Xcursor.size: 24
 
 !!Transparency 0-1:
-!st.alpha: 1 
+st.alpha: 1 
 !st.font: FiraCode:pixelsize=16
 
 *.font:	Recursive Mono Linear Static:pixelsize=14:antialias=true:autohint=true;

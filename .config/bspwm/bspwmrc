@@ -1,19 +1,21 @@
 #! /bin/sh
-
+dunst &
+picom &
+redshift &
 sxhkd &
+setxkbmap se,en
 xsetroot -cursor_name left_ptr
 xset r rate 200 40
 xset m 0 0
 xwallpaper --zoom ~/.config/wall.jpg
-/home/wilmer/.config/polybar/launch.sh
+~/.config/polybar/launch.sh
 
- # if [[ $HOSTNAME == stationar ]]; then
- #     bspc monitor DP-2 -d I II III IV V VI VII VIII IX X
- # elif [[ $HOSTNAME == barbar ]]; then
- #     bspc monitor edp1 -d I II III IV V
- #     bspc monitor DP-1 -d VI VII VIII IX X
- 
-bspc monitor DP-2 -d I II III IV V VI VII VIII IX X
+if [ "$HOSTNAME" = "barbar" ]; then
+    bspc monitor edp1 -d I II III IV V
+    bspc monitor DP-1 -d VI VII VIII IX X
+else
+    bspc monitor DP-2 -d I II III IV V VI VII VIII IX X
+fi
 
 bspc config border_width         2
 bspc config window_gap          12

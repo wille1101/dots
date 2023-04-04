@@ -1,5 +1,5 @@
 [global]
-font = Fira Code
+font = BlexMono Nerd Font
 
 # Allow a small subset of html markup:
 #   <b>bold</b>
@@ -11,8 +11,7 @@ font = Fira Code
 # <http://developer.gnome.org/pango/stable/PangoMarkupFormat.html>.
 # If markup is not allowed, those tags will be stripped out of the
 # message.
-markup = yes
-plain_text = no
+markup = full
 
 # The format of the message.  Possible variables are:
 #   %a  appname
@@ -35,11 +34,13 @@ indicate_hidden = yes
 alignment = left
 vertical_alignment = top
 
-# The frequency with wich text that is longer than the notification
-# window allows bounces back and forth.
-# This option conflicts with "word_wrap".
+# Don't remove messages, if the user is idle (no mouse or keyboard input)
+# for longer than idle_threshold seconds.
 # Set to 0 to disable.
-bounce_freq = 0
+# A client can set the 'transient' hint to bypass this. See the rules
+# section for how to disable this if necessary
+idle_threshold = 120
+
 
 # Show age of message if message is older than show_age_threshold
 # seconds.
@@ -55,23 +56,28 @@ ignore_newline = no
 
 # Hide duplicate's count and stack them
 stack_duplicates = yes
-hide_duplicates_count = yes
 
+### Geometry ###
 
-# The geometry of the window:
-#   [{width}]x{height}[+/-{x}+/-{y}]
-# The geometry of the message window.
-# The height is measured in number of notifications everything else
-# in pixels.  If the width is omitted but the height is given
-# ("-geometry x2"), the message window expands over the whole screen
-# (dmenu-like).  If width is 0, the window expands to the longest
-# message displayed.  A positive x is measured from the left, a
-# negative from the right side of the screen.  Y is measured from
-# the top and down respectevly.
-# The width can be negative.  In this case the actual width is the
-# screen width minus the width defined in within the geometry option.
-#geometry = "250x50-40+40"
-geometry = "300x50-15+49"
+# dynamic width from 0 to 300
+# width = (0, 300)
+# constant width of 300
+width = 300
+
+# The maximum height of a single notification, excluding the frame.
+height = 300
+
+# Position the notification in the top right corner
+origin = top-right
+
+# Offset from the origin
+offset = 10x50
+
+# Scale factor. It is auto-detected if value is 0.
+scale = 0
+
+# Maximum number of notification (0 means no limit)
+notification_limit = 20
 
 # Shrink window if it's smaller than the width.  Will be ignored if
 # width is 0.
@@ -137,11 +143,6 @@ horizontal_padding = 6
 #  * anything else will be interpreted as a X color.
 separator_color = frame
 
-# Print a notification on startup.
-# This is mainly for error detection, since dbus (re-)starts dunst
-# automatically after a crash.
-startup_notification = false
-
 # dmenu path.
 dmenu = /usr/bin/dmenu -p dunst:
 
@@ -156,43 +157,20 @@ max_icon_size = 80
 icon_path = /usr/share/icons/Paper/16x16/mimetypes/:/usr/share/icons/Paper/48x48/status/:/usr/share/icons/Paper/16x16/devices/:/usr/share/icons/Paper/48x48/notifications/:/usr/share/icons/Paper/48x48/emblems/
 
 frame_width = 1
-frame_color = "141414"
-
-[shortcuts]
-
-# Shortcuts are specified as [modifier+][modifier+]...key
-# Available modifiers are "ctrl", "mod1" (the alt-key), "mod2",
-# "mod3" and "mod4" (windows-key).
-# Xev might be helpful to find names for keys.
-
-# Close notification.
-close = ctrl+space
-
-# Close all notifications.
-close_all = ctrl+shift+space
-
-# Redisplay last message(s).
-# On the US keyboard layout "grave" is normally above TAB and left
-# of "1".
-history = ctrl+grave
-
-# Context menu.
-context = ctrl+shift+period
+frame_color = "#1d2021"
 
 [urgency_low]
 # IMPORTANT: colors have to be defined in quotation marks.
 # Otherwise the "#" and following would be interpreted as a comment.
-frame_color = "#141414"
+frame_color = "#1d2021"
 foreground = "#FFFFFF"
-background = "#141414"
-#background = "#2B313C"
+background = "#1d2021"
 timeout = 4
 
 [urgency_normal]
-frame_color = "#141414"
+frame_color = "#1d2021"
 foreground = "#FFFFFF"
-background = "#141414"
-#background = "#2B313C"
+background = "#1d2021"
 timeout = 6
 
 [urgency_critical]
