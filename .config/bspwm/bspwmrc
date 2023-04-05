@@ -15,6 +15,7 @@ if [ "$HOSTNAME" = "barbar" ]; then
     bspc monitor DP-1 -d VI VII VIII IX X
 else
     bspc monitor DP-2 -d I II III IV V VI VII VIII IX X
+    xset -dpms
 fi
 
 bspc config border_width         2
