@@ -11,7 +11,7 @@ xwallpaper --zoom ~/.config/wall.jpg
 ~/.config/polybar/launch.sh
 
 if [ "$HOSTNAME" = "barbar" ]; then
-    bspc monitor edp1 -d I II III IV V
+    bspc monitor eDP-1 -d I II III IV V
     bspc monitor DP-1 -d VI VII VIII IX X
 else
     bspc monitor DP-2 -d I II III IV V VI VII VIII IX X
