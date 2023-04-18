@@ -27,9 +27,9 @@ super + a
 	st -e "pulsemixer"
 
 # #Ljusstyrka
-# XF86MonBrightness{Down,Up}
-# 	xbacklight {-dec,-inc} 10
-#
+XF86MonBrightness{Down,Up}
+ 	xbacklight {-dec,-inc} 10
+
 # #Ljud
 XF86Audio{Lower,Raise}Volume
  	pulsemixer --change-volume {-5,+5}

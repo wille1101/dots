@@ -3,7 +3,7 @@ dunst &
 picom &
 redshift &
 sxhkd &
-setxkbmap se,en
+setxkbmap se
 xsetroot -cursor_name left_ptr
 xset r rate 200 40
 xset m 0 0

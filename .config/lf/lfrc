@@ -9,6 +9,10 @@ map R bulk-rename
 
 map ze extract
 
+# Move to sibling directory
+map J :updir; set dironly true; down; set dironly false; open
+map K :updir; set dironly true; up; set dironly false; open
+
 # Preview
 set previewer ctpv
 set cleaner ctpvclear
