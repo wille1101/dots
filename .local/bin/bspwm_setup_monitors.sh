@@ -31,7 +31,7 @@ monitor_remove() {
 
 if [[ $(xrandr -q | grep "${EXTERNAL_MONITOR} connected") ]]; then
   # set xrandr rules for docked setup
-  xrandr --output eDP-1 --primary --mode 1920x1200 --pos 0x0 --rotate normal --output DP-1 --mode 3440x1440 --pos 1920x0 --rotate normal --output DP-2 --off --output DP-3 --off --output DP-4 --off
+  xrandr --output eDP-1 --primary --mode 1920x1200 --pos 0x0 --rotate normal --output DP-1 --mode 3440x1440 --pos 3440x0 --rotate normal --output DP-2 --off --output DP-3 --off --output DP-4 --off
   if [[ $(bspc query -D -m "${EXTERNAL_MONITOR}" | wc -l) -ne 5 ]]; then
     monitor_add
   fi
