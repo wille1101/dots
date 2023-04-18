@@ -7,5 +7,9 @@ killall -q polybar
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
 # Launch bar1 and bar2
-polybar main &
-#polybar secmon  &
+if [ "$HOSTNAME" = "barbar" ]; then
+	polybar --reload mainmon &
+	polybar --reload secmon &
+else
+	polybar main &
+fi

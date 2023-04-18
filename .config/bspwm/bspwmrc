@@ -7,15 +7,27 @@ setxkbmap se
 xsetroot -cursor_name left_ptr
 xset r rate 200 40
 xset m 0 0
-xwallpaper --zoom ~/.config/wall.jpg
-~/.config/polybar/launch.sh
+
 
 if [ "$HOSTNAME" = "barbar" ]; then
-    bspc monitor eDP-1 -d I II III IV V
-    bspc monitor DP-1 -d VI VII VIII IX X
+    INTERNAL_MONITOR="eDP-1"
+    EXTERNAL_MONITOR="DP-1"
+    # on first load setup default workspaces
+    if [[ "$1" = 0 ]]; then
+	    if [[ $(xrandr -q | grep "^${EXTERNAL_MONITOR} connected") ]]; then
+		    bspc monitor "$EXTERNAL_MONITOR" -d 1 2 3 4 5
+		    bspc monitor "$INTERNAL_MONITOR" -d 6 7 8 9 10
+		    bspc wm -O "$EXTERNAL_MONITOR" "$INTERNAL_MONITOR"
+	    else
+		    bspc monitor "$INTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8 9 10
+	    fi
+    fi
+    ~/.local/bin/bspwm_setup_monitors.sh &
 else
-    bspc monitor DP-2 -d I II III IV V VI VII VIII IX X
+    bspc monitor DP-2 -d 1 2 3 4 5 6 7 8 9 10
     xset -dpms
+    xwallpaper --zoom ~/.config/wall.jpg
+    ~/.config/polybar/launch.sh
 fi
 
 bspc config border_width         2
