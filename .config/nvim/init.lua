@@ -205,7 +205,7 @@ require('lazy').setup({
       map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
 
       -- Close buffer
-      map('n', '<A-c>', '<Cmd>BufferClose<CR>', opts)
+      map('n', '<A-q>', '<Cmd>BufferClose<CR>', opts)
 
       -- Magic buffer-picking mode
       map('n', '<C-p>', '<Cmd>BufferPick<CR>', opts)
