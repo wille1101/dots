@@ -47,7 +47,7 @@ XF86AudioPrev
  	playerctl previous
 
 #Powermenu
-ctrl + alt + Delete
+ctrl + alt + backspace
 	powermenu
 
 #Keyboard layout
