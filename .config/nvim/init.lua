@@ -215,6 +215,12 @@ require('lazy').setup({
       map('n', '<Space>bl', '<Cmd>BufferOrderByLanguage<CR>', opts)
       map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', opts)
 
+      require("barbar").setup {
+        sidebar_filetypes = {
+          NvimTree = true
+        }
+      }
+
     end,
   },
 
@@ -497,9 +503,7 @@ local servers = {
   clangd = {},
   gopls = {},
   tsserver = {},
-  -- pyright = {},
   -- rust_analyzer = {},
-
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
