@@ -35,11 +35,19 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
 
+  {
+    'sindrets/diffview.nvim',
+    config = function()
+      require("diffview").setup{
+        vim.keymap.set('n', '<leader>gdf', '<Cmd>DiffviewFileHistory %<CR>', { desc = '[G]it [D]iff [F]ileView' }),
+        vim.keymap.set('n', '<leader>gdq', '<Cmd>DiffviewClose<CR>', { desc = '[G]it [D]iff [C]lose' })
+      }
+    end,
+  },
+
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  -- NOTE: This is where your plugins related to LSP can be installed.
-  --  The configuration is done below. Search for lspconfig to find it below.
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -51,7 +59,7 @@ require('lazy').setup({
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', opts = {} },
 
-      -- Additional lua configuration, makes nvim stuff amazing!
+      -- Additional lua configuration
       'folke/neodev.nvim',
     },
   },
@@ -67,7 +75,7 @@ require('lazy').setup({
     config = function()
       -- Add name for prefixes 
       require("which-key").register({
-        b = {
+        B = {
           name = "Barbar",
         },
         g = {
@@ -97,7 +105,71 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+
+
+
     },
+    config = function()
+      require("gitsigns").setup{
+        -- Line number shows status
+        numhl = true,
+
+        on_attach = function (bufnr)
+          local gs = package.loaded.gitsigns
+          local function map(mode, l, r, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            vim.keymap.set(mode, l, r, opts)
+          end
+
+          -- Navigation
+          map('n', ']g', function()
+            if vim.wo.diff then return ']c' end
+            vim.schedule(function() gs.next_hunk() end)
+            return '<Ignore>'
+          end, {expr=true, desc="Move to the next hunk"})
+
+          map('n', '[g', function()
+            if vim.wo.diff then return '[c' end
+            vim.schedule(function() gs.prev_hunk() end)
+            return '<Ignore>'
+          end, {expr=true, desc="Move to the previous hunk"})
+
+          -- Stage reset individual hunk under cursor
+          map('n', '<leader>ga', gs.stage_hunk, {desc="Stage hunk"})
+          map('n', '<leader>gr', gs.reset_hunk, {desc="Reset hunk"})
+          map('n', '<leader>gu', gs.undo_stage_hunk, {desc="Undo stage hunk"})
+
+          -- Stage hunk in selection
+          map('v', '<leader>ga', function() gs.stage_hunk {vim.fn.line("."), vim.fn.line("v")} end, {desc="Stage selected hunk"})
+          map('v', '<leader>gr', function() gs.reset_hunk {vim.fn.line("."), vim.fn.line("v")} end, {desc="Reset selected hunk"})
+
+          -- Stage/reset all hunks in a file
+          map('n', '<leader>gA', gs.stage_buffer, {desc="Stage all hunks in file"})
+          map('n', '<leader>gR', gs.reset_buffer_index, {desc="Reset all hunks in file"})
+          map('n', '<leader>gU', gs.reset_buffer, {desc="Undo stage of all hunks in file"})
+
+          -- Popup what's changed in a hunk under cursor
+          map('n', '<leader>gp', gs.preview_hunk, {desc="Preview hunk"})
+
+          map('n', '<leader>gtd', gs.toggle_deleted, {desc="Toggle deleted"})
+
+          -- Open git status in interative window (similar to lazygit)
+          map('n', '<leader>gg', '<Cmd>Git<CR>', {desc="Show git status in a window"})
+
+          -- Open commit window (creates commit after writing and saving commit msg)
+          map('n', '<leader>gc', '<Cmd>Git commit | startinsert<CR>', {desc="Show git commit window"})
+
+          -- Blame commands
+          map('n', '<leader>gb', function() gs.blame_line{full=true} end, {desc="Open floating git blame message"})
+          map('n', '<leader>gtb', gs.toggle_current_line_blame, {desc="Toggle current line git blame"})
+
+          -- Text object
+          map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', {desc="Select the hunk"})
+
+        end,
+      }
+    end,
   },
 
   { -- Theme 
@@ -126,12 +198,8 @@ require('lazy').setup({
   { 'nvim-telescope/telescope.nvim', version = '*', dependencies = { 'nvim-lua/plenary.nvim', 'BurntSushi/ripgrep' } },
 
   -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-  -- Only load if `make` is available. Make sure you have the system
-  -- requirements installed.
   {
     'nvim-telescope/telescope-fzf-native.nvim',
-    -- NOTE: If you are having trouble with this installation,
-    --       refer to the README for telescope-fzf-native for more instructions.
     build = 'make',
     cond = function()
       return vim.fn.executable 'make' == 1
@@ -210,10 +278,10 @@ require('lazy').setup({
       -- Magic buffer-picking mode
       map('n', '<C-p>', '<Cmd>BufferPick<CR>', opts)
       -- Sort automatically by...
-      map('n', '<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>', opts)
-      map('n', '<Space>bd', '<Cmd>BufferOrderByDirectory<CR>', opts)
-      map('n', '<Space>bl', '<Cmd>BufferOrderByLanguage<CR>', opts)
-      map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', opts)
+      map('n', '<Space>Bb', '<Cmd>BufferOrderByBufferNumber<CR>', opts)
+      map('n', '<Space>Bd', '<Cmd>BufferOrderByDirectory<CR>', opts)
+      map('n', '<Space>Bl', '<Cmd>BufferOrderByLanguage<CR>', opts)
+      map('n', '<Space>Bw', '<Cmd>BufferOrderByWindowNumber<CR>', opts)
 
       require("barbar").setup {
         sidebar_filetypes = {
@@ -302,6 +370,9 @@ vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to bottom pane' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to top pane' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right pane' })
 
+-- Switch window
+vim.keymap.set('n', '<C-s>', '<C-w>w', { desc = 'Switch window' })
+
 -- Resize window using <ctrl> arrow keys
 vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
@@ -373,7 +444,7 @@ vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]earch [K]eymap' })
 
-vim.keymap.set('n', '<leader>gb', require('telescope.builtin').git_branches, { desc = '[G]it [B]ranches' })
+vim.keymap.set('n', '<leader>gB', require('telescope.builtin').git_branches, { desc = '[G]it [B]ranches' })
 vim.keymap.set('n', '<leader>gc', require('telescope.builtin').git_commits, { desc = '[G]it [C]ommits' })
 vim.keymap.set('n', '<leader>gs', require('telescope.builtin').git_status, { desc = '[G]it [S]tatus' })
 
