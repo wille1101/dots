@@ -27,7 +27,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-
 -- Plugin setup.
 require('lazy').setup({
 
@@ -66,7 +65,12 @@ require('lazy').setup({
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
-    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
+    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip', 'onsails/lspkind.nvim' },
+  },
+
+  { -- Autocomplete buffer search
+    'tzachar/cmp-fuzzy-buffer',
+    dependencies = {'hrsh7th/nvim-cmp', 'tzachar/fuzzy.nvim' }
   },
 
   -- Show you pending keybinds.
@@ -209,7 +213,7 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
+      'nvim-treesitter/nvim-treesitter-textobjects', 'windwp/nvim-ts-autotag'
     },
     config = function()
       pcall(require('nvim-treesitter.install').update { with_sync = true })
@@ -454,9 +458,10 @@ require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'help', 'vim', 'javascript', 'typescript' },
 
-  -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
+  -- Autoinstall languages that are not installed. Defaults to false
   auto_install = false,
 
+  autotag = { enable = true },
   highlight = { enable = true },
   indent = { enable = true, disable = { 'python' } },
   incremental_selection = {
@@ -629,6 +634,21 @@ cmp.setup {
       luasnip.lsp_expand(args.body)
     end,
   },
+
+  formatting = {
+    format = function(entry, vim_item)
+      if vim.tbl_contains({ 'path' }, entry.source.name) then
+        local icon, hl_group = require('nvim-web-devicons').get_icon(entry:get_completion_item().label)
+        if icon then
+          vim_item.kind = string.format('%s %s', icon, vim_item.kind) -- This concatonates the icons with the name of the item kind
+          vim_item.kind_hl_group = hl_group
+          return vim_item
+        end
+      end
+      return require('lspkind').cmp_format({ with_text = true})(entry, vim_item)
+    end
+  },
+
   mapping = cmp.mapping.preset.insert {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -656,12 +676,25 @@ cmp.setup {
       end
     end, { 'i', 's' }),
   },
+
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   },
+
   preselect = cmp.PreselectMode.None,
+
 }
+
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'fuzzy_buffer' }
+  }),
+  view = {
+    entries = {name = 'wildmenu', separator = '|' }
+  },
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
