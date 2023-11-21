@@ -10,6 +10,9 @@ super + Return
 super + shift + Return
 	rofi modi run,drun -show drun -show-icons -drun-icon-theme -hide-scrollbar
 
+super + shift + o
+	$HOME/.local/bin/nitrokeyotp
+
 # make sxhkd reload its configuration files:
 super + Escape
 	pkill -USR1 -x sxhkd
@@ -48,7 +51,7 @@ XF86AudioPrev
 
 #Powermenu
 ctrl + alt + Delete
-	powermenu
+	$HOME/.local/bin/powermenu
 
 #Keyboard layout
 alt + space

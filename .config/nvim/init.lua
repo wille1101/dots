@@ -57,7 +57,11 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',
+        tag = "legacy",
+        event = "LspAttach",
+        opts = {},
+      },
 
       -- Additional lua configuration
       'folke/neodev.nvim',
@@ -185,9 +189,11 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
+    main = "ibl",
     opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
+      indent = {
+        char = '┊',
+      },
     },
   },
 
@@ -571,6 +577,8 @@ end
 --  Add any additional override configuration in the following tables. They will be passed to
 --  the `settings` field of the server config. You must look up that documentation yourself.
 local servers = {
+  svelte = {},
+  pylsp = {},
   clangd = {},
   gopls = {},
   tsserver = {},
