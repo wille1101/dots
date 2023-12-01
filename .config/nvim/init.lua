@@ -64,6 +64,13 @@ require('lazy').setup({
 
       -- Additional lua configuration
       'folke/neodev.nvim',
+
+      {
+        'kaarmu/typst.vim',
+        ft = 'typst',
+        lazy=false,
+      }
+
     },
   },
 
@@ -562,6 +569,9 @@ local on_attach = function(_, bufnr)
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
+  -- Typst compile
+  nmap('<leader>ll', '<Cmd>TypstWatch<CR>', 'Typst Compile and Watch')
+
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
@@ -587,6 +597,9 @@ local servers = {
   clangd = {},
   gopls = {},
   tsserver = {},
+  typst_lsp = {
+    exportPdf = "never"
+  },
   -- rust_analyzer = {},
   lua_ls = {
     Lua = {
@@ -615,11 +628,21 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-    }
+    if server_name == 'typst_lsp' then
+      require('lspconfig')[server_name].setup{
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = servers[server_name],
+        -- Change default rood_dir from .git dir to normal dir, only for typst_lsp
+        root_dir = function() return vim.fn.getcwd() end
+      }
+    else
+      require('lspconfig')[server_name].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = servers[server_name],
+      }
+    end
   end,
 }
 
